@@ -1,0 +1,11 @@
+--- ./configure.in~	2004-11-10 04:28:18.000000000 +0200
++++ ./configure.in	2005-02-03 16:50:33.000000000 +0200
+@@ -35,7 +35,7 @@
+ dnl Check for SSL support.
+ AC_MSG_CHECKING(whether to enable SSL support)
+ AC_ARG_WITH(ssl,
+-[  -with-ssl              Enable SSL support],
++[  --with-ssl              Enable SSL support],
+ [ case "$withval" in
+     yes)
+       AC_MSG_RESULT(yes)
