@@ -1,18 +1,14 @@
-# TODO:
-# - SECURITY: http://securitytracker.com/alerts/2004/Oct/1011583.html
-#
-%define		_pre	beta2
 Summary:	Simple IRC bouncer
 Summary(pl):	Proste narzêdzie do tunelowania irc
 Name:		bnc
-Version:	2.8.8
-Release:	0.%{_pre}.3
+Version:	2.8.9
+Release:	1
 License:	GPL
 Group:		Networking/Utilities
-Source0:	http://gotbnc.com/files/%{name}%{version}%{_pre}.tar.gz
-# Source0-md5:	5ec74cf2f8d50104c0d512c212417e86
+Source0:	http://gotbnc.com/files/%{name}%{version}.tar.gz
+# Source0-md5:	4cabd254443c803fc759b1f062e7bedb
+# Source0-size:	57527
 Source1:	%{name}setup.pld
-Patch0:		%{name}-c_fix.patch
 URL:		http://gotbnc.com/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -34,7 +30,6 @@ od u¿ytkownika do serwera i vice versa.
 
 %prep
 %setup -q -n %{name}%{version}
-%patch0 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -60,5 +55,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README CHANGES
+%doc README Changelog
 %attr(755,root,root) %{_bindir}/*
