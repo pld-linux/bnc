@@ -1,0 +1,378 @@
+#!/bin/sh
+# You NEED the dialog program to use this!
+MYPID=$$
+TMPFILE=.bnc$MYPID.tmp
+RSLFILE=.bnc$MYPID.rsl
+VHTFILE=.bnc$MYPID.vht
+BSVERSION="0.3 for BNC2.6.4"
+SAVEFILE=./bnc.conf
+
+bsclean()
+{
+  rm -f $TMPFILE $RSLFILE $VHTFILE
+  exit $1
+}
+
+saveit()
+{
+echo "Writing your configuration to $SAVEFILE"
+cat << EOF > $TMPFILE
+#!/home/myhome/bnc
+# BNCSetup $BSVERSION by IceWizard and pharos
+# automaticly generated configuration file.
+# edit the first line and chmod +x this file if you like to load bnc
+# by running its .conf file
+#               Here are additional options you may add:
+# C:6667                        Default Irc Server Port to Connect to
+# X:default.vhost.com           Default Virtual Host to Use
+# V:another.vhost.com           Other Vhosts That Can Be Used
+# V:different.vhost.com          As Many Vhosts as You Want
+# P:pid.bnc                     Name of PID File
+#                                *NOTE PID file is required if bnc is to be
+#                                *used with crontab
+# L:bnc.log                     Name of Log File
+# W:1                           enable dynamic idents on servers with
+#                                identwd installed
+# A:1:*.addy.net                Allow list of ip addresses that can use BNC
+S:$SUPERPASS
+D:$BNCPORT:$MAXUSERS:$BNCPASS
+
+EOF
+
+cat $TMPFILE $VHTFILE > $SAVEFILE
+echo "Finished! You may now edit $SAVEFILE to make any special changes"
+
+bsclean 0
+}
+
+altconf()
+{
+  echo "##" > $VHTFILE
+  echo "Running alt configuration tool"
+  echo -n "Port to listen on> " 
+  read BNCPORT
+  echo "How many users would you like to be allowed on BNC at the same time?"
+  echo "Please note, if you would like to allow unlimited users, enter a 0"
+  echo -n "> "
+  read MAXUSERS
+  echo -n "Pick a password >"
+  read BNCPASS
+  echo -n "Pick a password for the superuser >"
+  read SUPERPASS
+  saveit
+
+}
+
+if ! [ -e /usr/bin/bncmkpasswd ]
+then
+  echo "You need to Make the package before you can use this script"
+  echo "(required /usr/bin/bncmkpasswd)"
+  bsclean 0
+fi
+
+echo "BAD\$" > $TMPFILE
+echo "Test" | /usr/bin/bncmkpasswd -s >> $TMPFILE
+CRCYS=$(cat $TMPFILE | grep '\$' | tail -1 )
+
+
+if [ "BAD\$" = "$CRCYS" ]
+then
+  CRCY=ON
+else
+  echo "Your OS is using an unstandard Crypt lib, disabling encryption."
+  CRCY=OFF
+  echo "Continuing script in 4 seconds"
+  sleep 4
+fi
+
+dialog --clear
+ERRORLEVEL=$?
+if [ x$ERRORLEVEL != x0 ]
+then
+  echo "You appear to not have the program named dialog"
+  echo "This script depends on it heavily"
+  altconf
+  bsclean 0
+fi
+
+
+
+cat << EOF > $TMPFILE
+BNCSETUP v$BSVERSION
+
+Written by IceWizard <ice@walt-disney.com>
+Rewritten Pharos <Pharos@refract.com>
+BNCSetup is a quick BNC conf generator
+
+EOF
+clear
+dialog --title "BNCSETUP by IceWizard" --msgbox "$(cat $TMPFILE)" 10 50
+
+cat << EOF > $TMPFILE
+What port would you like BNC to listen on?
+This must be a number greater than 1024 and must not be in use.
+
+EOF
+
+BNCPORT=
+while [ -z "$BNCPORT" ]
+do
+
+  dialog --title "Port to listen on" --inputbox "$(cat $TMPFILE)" 10 68 "6669" 2> $RSLFILE
+  ERRORLEVEL=$?
+  BNCPORT="$(head -1 $RSLFILE)"
+  if [ x$ERRORLEVEL = x1 ]
+  then
+    clear
+    echo "BNC Configuration was cancelled..."
+    bsclean 0
+  fi
+done
+
+
+cat << EOF > $TMPFILE
+How many users would you like to be allowed on BNC at the same time?
+Please note, if you would like to allow unlimited users, enter a 0
+
+EOF
+
+MAXUSERS=
+while [ -z "$MAXUSERS" ]
+do
+  dialog --title "Maximum users" --inputbox "$(cat $TMPFILE)" 10 78 "0" 2> $RSLFILE
+  ERRORLEVEL=$?
+  MAXUSERS="$(head -1 $RSLFILE)"
+  if [ x$ERRORLEVEL = x1 ]
+  then
+    clear
+    echo "BNC Configuration was cancelled..."
+    bsclean 0
+  fi
+done
+
+cat << EOF > $TMPFILE
+Pick a password you would like to use for BNC?
+This is the pass that will be used upon
+/quote pass PASS
+when using bnc.
+
+EOF
+
+BNCPASS=
+while [ -z "$BNCPASS" ]
+do
+
+  dialog --title "Pick a password" --inputbox "$(cat $TMPFILE)" 12 60 2> $RSLFILE
+  ERRORLEVEL=$?
+  BNCPASS="$(head -1 $RSLFILE)"
+  if [ x$ERRORLEVEL = x1 ]
+  then
+    clear
+    echo "BNC Configuration was cancelled..."
+    bsclean 0
+  fi
+done
+
+cat << EOF > $TMPFILE
+Pick a superviser password you would like to use for BNC?
+If you are the only person to use your BNC,
+feel free to enter the same password.
+
+EOF
+
+SUPERPASS=
+while [ -z "$SUPERPASS" ]
+do
+  dialog --title "Pick a superviser password" --inputbox "$(cat $TMPFILE)" 10 62 2> $RSLFILE
+  ERRORLEVEL=$?
+  SUPERPASS="$(head -1 $RSLFILE)"
+  if [ x$ERRORLEVEL = x1 ]; then
+    clear
+    echo "BNC Configuration was cancelled..."
+    bsclean 0
+  fi
+done
+
+if [ xON = x$CRCY ]
+then
+
+dialog --yesno "Use encrypted passes in config file (Securety)" 5 60
+ERRORLEVEL=$?
+
+if [ x$ERRORLEVEL = x0 ]
+then 
+  if [ -x /usr/bin/bncmkpasswd ]
+  then
+    SUPERPASS="+"$(echo "$SUPERPASS" | /usr/bin/bncmkpasswd -s)
+    BNCPASS="+"$(echo "$BNCPASS" | /usr/bin/bncmkpasswd -s)
+  else
+    clear
+    echo "You have not did ./configure and make so there is no /usr/bin/bncmkpasswd"
+    echo "This program is required to produce the encryption"
+    bsclean 0
+  fi
+fi
+fi
+
+rm -f $VHTFILE
+dialog --radiolist "Choose Allow method" 10 70 3 \
+"0" "Allow ANY ip to use bnc if they know the pass" "on" \
+"1" "Go to menu for creating ip lists" "off" 2> $RSLFILE
+ERRORLEVEL=$?
+if [ x$ERRORLEVEL = x1 ]; then
+  clear
+  echo "BNC Configuration was cancelled..."
+  bsclean 0
+fi
+ERRORLEVEL="$(head -1 $RSLFILE)"
+
+cat << EOF > $TMPFILE
+Enter an IP to be allowed to use BNC.
+this ip can include *'s and ?'s and other wildcard stuff.
+enter q alone to end entering IP's
+EOF
+
+if [ x$ERRORLEVEL = x1 ]
+then
+BDONE=
+  while ! [ x$BDONE = xq ]
+  do
+    dialog --title "Enter Wildcard IP" --inputbox "$(cat $TMPFILE)" 10 62 2> $RSLFILE
+    BDONE="$(head -1 $RSLFILE)"
+    if ! [ -z BDONE ]
+    then
+      if ! [ x$BDONE = xq ]
+      then
+        echo "A:1:$BDONE" >> $VHTFILE
+      fi
+    fi
+  done
+fi
+
+if ! [ -e "$VHTFILE" ]
+then
+  echo "A:1:*" > $VHTFILE
+fi
+
+
+cat << EOF > $TMPFILE
+Enter a Default Vhost IP or DNS that bnc will use.
+EOF
+
+dialog --yesno "Enter a default Vhost to use?" 5 60
+ERRORLEVEL=$?
+
+if [ x$ERRORLEVEL = x0 ]
+then 
+  dialog --title "Enter Default Vhost" --inputbox "$(cat $TMPFILE)" 10 62 2> $RSLFILE
+  BDONE="$(head -1 $RSLFILE)"
+  if ! [ -z BDONE ]
+  then
+    echo "X:$BDONE" >> $VHTFILE
+  fi
+fi
+
+dialog --yesno "Enter a list of Vhost possiblities?" 5 60
+ERRORLEVEL=$?
+
+cat << EOF > $TMPFILE
+Enter an Vhost that can be used by this bnc.
+This has no bearing on how bnc functions but is simply
+what is listed when the user does:
+/quote vip
+enter q alone to end entering IP's
+EOF
+
+if [ x$ERRORLEVEL = x0 ]
+then
+BDONE=
+  while ! [ x$BDONE = xq ]
+  do
+    dialog --title "Enter Vhost possibility" --inputbox "$(cat $TMPFILE)" 15 62 2> $RSLFILE
+    BDONE="$(head -1 $RSLFILE)"
+    if ! [ -z BDONE ]
+    then
+      if ! [ x$BDONE = xq ]
+      then
+        echo "V:$BDONE" >> $VHTFILE
+      fi
+    fi
+  done
+fi
+
+
+dialog --yesno "Would you like bnc to log?" 5 60
+ERRORLEVEL=$?
+
+cat << EOF > $TMPFILE
+Pick a filename for bnc to write logging info into.
+if you do not want to use the default
+
+EOF
+
+if [ x$ERRORLEVEL = x0 ]
+then 
+  dialog --title "Enter logfile Filename" --inputbox "$(cat $TMPFILE)" 10 62 "bnc.log" 2> $RSLFILE
+  BDONE="$(head -1 $RSLFILE)"
+  if ! [ -z BDONE ]
+  then
+    echo "L:$BDONE" >> $VHTFILE
+  fi
+fi
+
+dialog --yesno "Would you like bnc to display a motd?" 5 60
+ERRORLEVEL=$?
+
+cat << EOF > $TMPFILE
+Pick a filename for bnc to show as a motd
+if you do not want to use the default
+
+EOF
+
+if [ x$ERRORLEVEL = x0 ]
+then 
+  dialog --title "Enter logfile Filename" --inputbox "$(cat $TMPFILE)" 10 62 "motd" 2> $RSLFILE
+  BDONE="$(head -1 $RSLFILE)"
+  if ! [ -z BDONE ]
+  then
+    echo "M:$BDONE" >> $VHTFILE
+  fi
+fi
+
+dialog --title "Requires Identwd to be installed." --yesno "Do you want bnc's dynamic ident support?" 5 60
+ERRORLEVEL=$?
+if [ x$ERRORLEVEL = x0 ]
+then
+  echo "W:1" >> $VHTFILE
+fi
+
+
+
+
+cat << EOF > $TMPFILE
+Pick a file to save the configuration in
+if you do not want to use the default
+
+EOF
+
+SAVEFILE=
+while [ -z "$SAVEFILE" ]
+do
+  dialog --title "Save as" --inputbox "$(cat $TMPFILE)" 10 45 "bnc.conf" 2> $RSLFILE
+  ERRORLEVEL=$?
+  SAVEFILE="$(head -1 $RSLFILE)"
+  if [ x$ERRORLEVEL = x1 ]; then
+    clear
+    echo "BNC Configuration was cancelled..."
+    bsclean 0
+  fi
+done
+clear
+if [ -e "$SAVEFILE" ]
+then
+  echo "BNCsetup found a configuration file already... saving it as $SAVEFILE.old"
+  mv $SAVEFILE "$SAVEFILE".old
+fi
+
+saveit
+
