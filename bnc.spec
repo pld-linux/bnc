@@ -6,9 +6,11 @@ Release:	1
 License:	GPL
 Group:		Networking/Utilities
 Group(de):	Netzwerkwesen/Werkzeuge
+Group(es):	Red/Utilitarios
 Group(pl):	Sieciowe/Narzêdzia
+Group(pt_BR):	Rede/Utilitários
 Source0:	http://gotbnc.com/files/%{name}%{version}.tar.gz
-Source1:	bncsetup.pld	
+Source1:	%{name}setup.pld
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -27,11 +29,11 @@ Prosty tunel IRC.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-mkdir $RPM_BUILD_ROOT/usr/bin -p
-install bnc $RPM_BUILD_ROOT/usr/bin
-install bncchk $RPM_BUILD_ROOT/usr/bin
-install %{SOURCE1} $RPM_BUILD_ROOT/usr/bin/bncsetup
-install mkpasswd $RPM_BUILD_ROOT/usr/bin/bncmkpasswd
+mkdir $RPM_BUILD_ROOT%{_bindir} -p
+install bnc $RPM_BUILD_ROOT%{_bindir}
+install bncchk $RPM_BUILD_ROOT%{_bindir}
+install %{SOURCE1} $RPM_BUILD_ROOT%{_bindir}/bncsetup
+install mkpasswd $RPM_BUILD_ROOT%{_bindir}/bncmkpasswd
 
 %clean
 rm -rf $RPM_BUILD_ROOT
