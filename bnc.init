@@ -1,0 +1,91 @@
+#!/bin/sh
+#
+# Startup script for the BNC
+#
+# chkconfig:	2345 81 45
+# description:	BNC is an IRC (Internet Relay Chat) proxying server
+# processname:	bnc
+# config:	/etc/bnc
+
+# Set some frequently user variables
+SERVICE=bnc
+LOCKFILE=/var/lock/subsys/$SERVICE
+MSG=$SERVICE
+PROG=$SERVICE
+PIDFILE=/var/run/$SERVICE/$SERVICE.pid
+
+# Source funtion library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Check that networking is up
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
+		msg_network_down $MSG
+		exit 1
+	fi
+else
+	exit 0
+fi
+
+# Get service config
+[ -f "/etc/sysconfig/$SERVICE" ] && . "/etc/sysconfig/$SERVICE"
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+  	if [ ! -f "$LOCKFILE" ]; then
+		# create the log
+		if [ ! -f /var/log/bnc.log ]; then
+			touch /var/log/bnc.log
+			chown bnc:bnc /var/log/bnc.log
+			chmod 640 /var/log/bnc.log
+		fi
+
+		msg_starting "$MSG"
+		start-stop-daemon --start --pidfile $PIDFILE --chuid bnc \
+			--chdir /etc/bnc --exec /usr/bin/bnc -- bnc.conf > /dev/null
+		# take or leave it, but rc=7 is successful exit code in bnc
+		[ $RETVAL = 7 ] && RETVAL=0
+
+		if [ $RETVAL -eq 0 ]; then
+			touch $LOCKFILE
+			ok
+		else
+			fail
+		fi
+	else
+		msg_already_running $MSG
+	fi
+	;;
+  stop)
+  	if [ -f "$LOCKFILE" ]; then
+		msg_stopping "$MSG"
+		if start-stop-daemon --stop --oknodo --pidfile $PIDFILE; then
+			rm -f $PIDFILE $LOCKFILE >/dev/null 2>&1
+			ok
+		else
+			fail
+		fi
+	else
+		msg_not_running "$MSG"
+	fi
+	;;
+  status)
+	status $PROG
+	exit $?
+	;;
+  restart|force-reload)
+	$0 stop
+	$0 start
+	exit $?
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|force-reload|status}"
+	exit 3
+esac
+
+exit $RETVAL
