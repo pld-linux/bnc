@@ -5,7 +5,7 @@ Version:	2.9.2
 Release:	1
 License:	GPL
 Group:		Networking/Utilities
-Source0:	http://gotbnc.com/files/%{name}%{version}.tar.gz
+Source0:	ftp://ftp.pld-linux.org/src/%{name}%{version}.tar.gz
 # Source0-md5:	edb144a029db71d52049a0a61c58d445
 Source1:	%{name}setup.pld
 URL:		http://gotbnc.com/
