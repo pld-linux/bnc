@@ -2,7 +2,7 @@ Summary:	Simple IRC bouncer
 Summary(pl):	Proste narzêdzie do tunelowania irc
 Name:		bnc
 Version:	2.8.4
-Release:	1
+Release:	2
 License:	GPL
 Group:		Networking/Utilities
 Group(de):	Netzwerkwesen/Werkzeuge
@@ -22,10 +22,10 @@ Prosty tunel IRC.
 %prep
 %setup -q -n %{name}%{version}
 
+%build
 %configure2_13
 
-%build
-%{__make} CC="gcc %{rpmcflags} -Wall"
+%{__make} CC="%{__cc} %{rpmcflags} -Wall"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -35,11 +35,12 @@ install bncchk $RPM_BUILD_ROOT%{_bindir}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_bindir}/bncsetup
 install mkpasswd $RPM_BUILD_ROOT%{_bindir}/bncmkpasswd
 
+gzip -9nf README CHANGES
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
+%doc README.gz CHANGES.gz
 %attr(755,root,root) %{_bindir}/*
-
-%doc README CHANGES COPYING
