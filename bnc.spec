@@ -48,6 +48,14 @@ Summary(pl):	Prosty demon do tunelowania IRC
 Group:		Networking/Utilities
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	/sbin/start-stop-daemon
+Requires(post):	grep
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires(post,preun):	/sbin/chkconfig
 
 %description init
 This package contains the initscript to start bnc as system service.
