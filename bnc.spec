@@ -1,13 +1,12 @@
 Summary:	Simple IRC bouncer
 Summary(pl):	Proste narzêdzie do tunelowania irc
 Name:		bnc
-Version:	2.8.9
+Version:	2.9.1
 Release:	1
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://gotbnc.com/files/%{name}%{version}.tar.gz
-# Source0-md5:	4cabd254443c803fc759b1f062e7bedb
-# Source0-size:	57527
+# Source0-md5:	ec371deebb7842b3703816296c7530a2
 Source1:	%{name}setup.pld
 URL:		http://gotbnc.com/
 BuildRequires:	autoconf
