@@ -1,5 +1,6 @@
 # TODO
 #  - bncsetup still not working, needs newer dialog
+#  - maybe the initscript should be in separate package?
 Summary:	Simple IRC bouncer
 Summary(pl):	Proste narzêdzie do tunelowania irc
 Name:		bnc
