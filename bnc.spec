@@ -5,6 +5,7 @@ Version:	2.9.2
 Release:	1
 License:	GPL
 Group:		Networking/Utilities
+# http://gotbnc.com/files/%{name}%{version}.tar.gz - doesn't work with distfiles, reason unknown
 Source0:	ftp://distfiles.pld-linux.org/src/%{name}%{version}.tar.gz
 # Source0-md5:	edb144a029db71d52049a0a61c58d445
 Source1:	%{name}setup.pld
