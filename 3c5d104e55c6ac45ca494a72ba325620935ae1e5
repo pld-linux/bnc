@@ -1,0 +1,3 @@
+- updated to 2.9.3 (security; ssl support)
+- patch bncsetup, rather having it's copy, this way it won't go outdated (hopefully)
+- bncsetup still not working
