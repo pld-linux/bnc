@@ -1,3 +1,6 @@
+# TODO:
+# - SECURITY: http://securitytracker.com/alerts/2004/Oct/1011583.html
+#
 %define		_pre	beta2
 Summary:	Simple IRC bouncer
 Summary(pl):	Proste narzêdzie do tunelowania irc
