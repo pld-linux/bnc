@@ -133,12 +133,12 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc README Changelog motd example.conf bncchk
-%dir %attr(750,bnc,bnc) %{_sysconfdir}
-%config(noreplace) %verify(not size mtime md5) %attr(640,bnc,bnc) %{_sysconfdir}/*
+%dir %attr(750,root,bnc) %{_sysconfdir}
+%config(noreplace) %verify(not size mtime md5) %attr(640,root,bnc) %{_sysconfdir}/*
 
 %attr(755,root,root) %{_bindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/%{name}
 
-%dir %attr(750,bnc,bnc) /var/run/%{name}
+%dir %attr(750,root,bnc) /var/run/%{name}
 %attr(620,bnc,bnc) %ghost /var/log/%{name}.log
