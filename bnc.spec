@@ -1,18 +1,22 @@
+# TODO
+#  - bncsetup still not working, needs newer dialog
 Summary:	Simple IRC bouncer
 Summary(pl):	Proste narzêdzie do tunelowania irc
 Name:		bnc
-Version:	2.9.2
-Release:	1
+Version:	2.9.3
+Release:	0.1
 License:	GPL
 Group:		Networking/Utilities
 # http://gotbnc.com/files/%{name}%{version}.tar.gz - doesn't work with distfiles, reason unknown
-Source0:	ftp://distfiles.pld-linux.org/src/%{name}%{version}.tar.gz
-# Source0-md5:	edb144a029db71d52049a0a61c58d445
-Source1:	%{name}setup.pld
+#Source0:	ftp://distfiles.pld-linux.org/src/%{name}%{version}.tar.gz
+Source0:	http://www.gotbnc.com/files/%{name}%{version}.tar.gz
+# Source0-md5:	5012f3eb112f0fda545b1aaf66a06150
+Patch0:		%{name}-setup.patch
 URL:		http://gotbnc.com/
 BuildRequires:	autoconf
 BuildRequires:	automake
-Requires:	dialog
+BuildRequires:	openssl-devel
+Requires:	dialog >= 1:0.70
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -30,11 +34,13 @@ od u¿ytkownika do serwera i vice versa.
 
 %prep
 %setup -q -n %{name}%{version}
+%patch0 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
 %{__autoconf}
-%configure
+%configure \
+	--with-ssl
 
 %{__make} \
 	CFLAGS="%{rpmcflags}" \
@@ -47,7 +53,7 @@ install -d $RPM_BUILD_ROOT%{_bindir}
 
 install bnc $RPM_BUILD_ROOT%{_bindir}
 install bncchk $RPM_BUILD_ROOT%{_bindir}
-install %{SOURCE1} $RPM_BUILD_ROOT%{_bindir}/bncsetup
+install bncsetup $RPM_BUILD_ROOT%{_bindir}/bncsetup
 install mkpasswd $RPM_BUILD_ROOT%{_bindir}/bncmkpasswd
 
 %clean
@@ -55,5 +61,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README Changelog
+%doc README Changelog motd example.conf
 %attr(755,root,root) %{_bindir}/*
