@@ -1,15 +1,12 @@
 # TODO
-#  - bncsetup still not working, needs newer dialog
-#  - maybe the initscript should be in separate package?
+#  - bncsetup working partially, needs newer dialog
 Summary:	Simple IRC bouncer
 Summary(pl):	Proste narzêdzie do tunelowania irc
 Name:		bnc
 Version:	2.9.3
-Release:	0.9
+Release:	0.10
 License:	GPL
 Group:		Networking/Utilities
-# http://gotbnc.com/files/%{name}%{version}.tar.gz - doesn't work with distfiles, reason unknown
-#Source0:	ftp://distfiles.pld-linux.org/src/%{name}%{version}.tar.gz
 Source0:	http://www.gotbnc.com/files/%{name}%{version}.tar.gz
 # Source0-md5:	5012f3eb112f0fda545b1aaf66a06150
 Source1:	%{name}.sysconfig
@@ -25,7 +22,6 @@ BuildRequires:	rpmbuild(macros) >= 1.177
 Provides:	group(bnc)
 Provides:	user(bnc)
 Requires:	dialog >= 1:0.69
-Requires:	/sbin/start-stop-daemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define	_sysconfdir /etc/%{name}
@@ -45,6 +41,15 @@ licencji GPL (General Public License). BNC pozwala u¿ytkownikom na
 po³±czenie siê z serwerem IRC wykorzystuj±c do tego komputer na którym
 BNC zosta³o uruchomione. Mówi±c w skrócie, BNC przekazuje informacje
 od u¿ytkownika do serwera i vice versa.
+
+%package init
+Summary:	Simple IRC bouncer daemon
+Group:		Networking/Utilities
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	/sbin/start-stop-daemon
+
+%description init
+This package contains the initscript to start bnc as system service.
 
 %prep
 %setup -q -n %{name}%{version}
@@ -77,7 +82,7 @@ install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%pre
+%pre init
 if [ -n "`/usr/bin/getgid %{name}`" ]; then
 	if [ "`/usr/bin/getgid %{name}`" != %{groupid} ]; then
 		echo "Error: group %{name} doesn't have gid=%{groupid}. Correct this before installing %{name}." 1>&2
@@ -96,7 +101,7 @@ else
 		-c "%{name} User" -g %{name} %{name} 1>&2
 fi
 
-%post
+%post init
 if ! egrep -q '^(adminpass|password)' /etc/bnc/bnc.conf; then
 %banner %{name} -e <<EOF
 You need to setup passwords in /etc/bnc/bnc.conf!
@@ -107,8 +112,7 @@ EOF
 
 fi
 
-# add service just once
-[ "$1" = "1" ] && /sbin/chkconfig --add %{name}
+/sbin/chkconfig --add %{name}
 
 if [ -f /var/lock/subsys/%{name} ]; then
 	/etc/rc.d/init.d/%{name} restart 1>&2
@@ -116,7 +120,7 @@ else
 	echo "Run \"/etc/rc.d/init.d/%{name} start\" to start %{name} daemon."
 fi
 
-%preun
+%preun init
 if [ "$1" = "0" ]; then
 	if [ -f /var/lock/subsys/%{name} ]; then
 		/etc/rc.d/init.d/%{name} stop 1>&2
@@ -124,7 +128,7 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del %{name}
 fi
 
-%postun
+%postun init
 if [ "$1" = "0" ]; then
 	%userremove bnc
 	%groupremove bnc
@@ -133,12 +137,13 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc README Changelog motd example.conf bncchk
+%attr(755,root,root) %{_bindir}/*
+
+%files init
+%defattr(644,root,root,755)
 %dir %attr(750,root,bnc) %{_sysconfdir}
 %config(noreplace) %verify(not size mtime md5) %attr(640,root,bnc) %{_sysconfdir}/*
-
-%attr(755,root,root) %{_bindir}/*
-%attr(754,root,root) /etc/rc.d/init.d/%{name}
 %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/%{name}
-
+%attr(754,root,root) /etc/rc.d/init.d/%{name}
 %dir %attr(750,root,bnc) /var/run/%{name}
 %attr(620,bnc,bnc) %ghost /var/log/%{name}.log
