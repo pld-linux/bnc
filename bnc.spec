@@ -10,7 +10,9 @@ Source0:	http://gotbnc.com/files/%{name}%{version}%{_pre}.tar.gz
 # Source0-md5:	5ec74cf2f8d50104c0d512c212417e86
 Source1:	%{name}setup.pld
 Patch0:		%{name}-c_fix.patch
+URL:		http://gotbnc.com/
 BuildRequires:	autoconf
+BuildRequires:	automake
 Requires:	dialog
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -36,11 +38,15 @@ cp -f /usr/share/automake/config.sub .
 %{__autoconf}
 %configure
 
-%{__make} CFLAGS="%{rpmcflags}" OFLAGS="%{rpmcflags}" LIBS="-lcrypt"
+%{__make} \
+	CFLAGS="%{rpmcflags}" \
+	OFLAGS="%{rpmcflags}" \
+	LIBS="-lcrypt"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-mkdir $RPM_BUILD_ROOT%{_bindir} -p
+install -d $RPM_BUILD_ROOT%{_bindir}
+
 install bnc $RPM_BUILD_ROOT%{_bindir}
 install bncchk $RPM_BUILD_ROOT%{_bindir}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_bindir}/bncsetup
