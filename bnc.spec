@@ -1,7 +1,7 @@
 # TODO
 #  - bncsetup working partially, needs newer dialog
 Summary:	Simple IRC bouncer
-Summary(pl):	Proste narzêdzie do tunelowania irc
+Summary(pl):	Proste narzêdzie do tunelowania IRC
 Name:		bnc
 Version:	2.9.3
 Release:	0.11
@@ -24,10 +24,10 @@ Provides:	user(bnc)
 Requires:	dialog >= 1:0.69
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	_sysconfdir /etc/%{name}
+%define		_sysconfdir	/etc/%{name}
 
-%define	userid	142
-%define	groupid	142
+%define		userid		142
+%define		groupid		142
 
 %description
 BNC is a great IRC (Internet Relay Chat) proxying server under the GPL
@@ -44,12 +44,17 @@ od u¿ytkownika do serwera i vice versa.
 
 %package init
 Summary:	Simple IRC bouncer daemon
+Summary(pl):	Prosty demon do tunelowania IRC
 Group:		Networking/Utilities
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	/sbin/start-stop-daemon
 
 %description init
 This package contains the initscript to start bnc as system service.
+
+%description init -l pl
+Ten pakiet zawiera skrypt init do uruchamiania bnc jako us³ugi
+systemowej.
 
 %prep
 %setup -q -n %{name}%{version}
@@ -64,7 +69,7 @@ cp -f /usr/share/automake/config.sub .
 
 %{__make} \
 	CFLAGS="%{rpmcflags}" \
-	OFLAGS="%{rpmcflags}" \
+	OFLAGS="%{rpmcflags}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
