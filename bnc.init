@@ -48,6 +48,7 @@ case "$1" in
 		msg_starting "$MSG"
 		start-stop-daemon --start --pidfile $PIDFILE --chuid bnc \
 			--chdir /etc/bnc --exec /usr/bin/bnc -- bnc.conf > /dev/null
+		RETVAL=$?
 		# take or leave it, but rc=7 is successful exit code in bnc
 		[ $RETVAL = 7 ] && RETVAL=0
 
