@@ -5,10 +5,6 @@ Version:	2.8.4
 Release:	2
 License:	GPL
 Group:		Networking/Utilities
-Group(de):	Netzwerkwesen/Werkzeuge
-Group(es):	Red/Utilitarios
-Group(pl):	Sieciowe/Narzêdzia
-Group(pt_BR):	Rede/Utilitários
 Source0:	http://gotbnc.com/files/%{name}%{version}.tar.gz
 Source1:	%{name}setup.pld
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
