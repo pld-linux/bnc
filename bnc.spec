@@ -4,7 +4,7 @@ Summary:	Simple IRC bouncer
 Summary(pl):	Proste narzêdzie do tunelowania irc
 Name:		bnc
 Version:	2.9.3
-Release:	0.10
+Release:	0.11
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://www.gotbnc.com/files/%{name}%{version}.tar.gz
@@ -145,5 +145,5 @@ fi
 %config(noreplace) %verify(not size mtime md5) %attr(640,root,bnc) %{_sysconfdir}/*
 %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
-%dir %attr(750,root,bnc) /var/run/%{name}
+%dir %attr(770,root,bnc) /var/run/%{name}
 %attr(620,bnc,bnc) %ghost /var/log/%{name}.log
