@@ -6,6 +6,7 @@ Release:	3
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://gotbnc.com/files/%{name}%{version}.tar.gz
+# Source0-md5:	c3800ec09f62abf9881b84770fa79362
 Source1:	%{name}setup.pld
 BuildRequires:	autoconf
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
