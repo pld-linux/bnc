@@ -1,14 +1,17 @@
+%define		_pre	beta2
 Summary:	Simple IRC bouncer
 Summary(pl):	Proste narzêdzie do tunelowania irc
 Name:		bnc
-Version:	2.8.6
-Release:	3
+Version:	2.8.8
+Release:	0.%{_pre}.1
 License:	GPL
 Group:		Networking/Utilities
-Source0:	http://gotbnc.com/files/%{name}%{version}.tar.gz
-# Source0-md5:	c3800ec09f62abf9881b84770fa79362
+Source0:	http://gotbnc.com/files/%{name}%{version}%{_pre}.tar.gz
+# Source0-md5:	5ec74cf2f8d50104c0d512c212417e86
 Source1:	%{name}setup.pld
+Patch0:		%{name}-c_fix.patch
 BuildRequires:	autoconf
+Requires:	dialog
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -26,12 +29,13 @@ od u¿ytkownika do serwera i vice versa.
 
 %prep
 %setup -q -n %{name}%{version}
+%patch0 -p1
 
 %build
 %{__autoconf}
 %configure
 
-%{__make} CC="%{__cc} %{rpmcflags} -Wall"
+%{__make} CFLAGS="%{rpmcflags}" OFLAGS="%{rpmcflags}" LIBS="-lcrypt"
 
 %install
 rm -rf $RPM_BUILD_ROOT
