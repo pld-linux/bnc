@@ -4,7 +4,7 @@ Summary:	Simple IRC bouncer
 Summary(pl):	Proste narzêdzie do tunelowania IRC
 Name:		bnc
 Version:	2.9.3
-Release:	0.11
+Release:	0.12
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://www.gotbnc.com/files/%{name}%{version}.tar.gz
@@ -117,7 +117,7 @@ fi
 %post init
 if ! egrep -q '^(adminpass|password)' /etc/bnc/bnc.conf; then
 %banner %{name} -e <<EOF
-You need to setup passwords in /etc/bnc/bnc.conf!
+You need to setup passwords in %{_sysconfdir}/%{name}.conf!
 The daemon will not start unless you've set them!
 
 EOF
