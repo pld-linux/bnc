@@ -3,12 +3,12 @@
 Summary:	Simple IRC bouncer
 Summary(pl):	Proste narzêdzie do tunelowania IRC
 Name:		bnc
-Version:	2.9.3
-Release:	0.12
+Version:	2.9.4
+Release:	1
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://www.gotbnc.com/files/%{name}%{version}.tar.gz
-# Source0-md5:	5012f3eb112f0fda545b1aaf66a06150
+# Source0-md5:	190486d2346415e30f6381377e82eb3b
 Source1:	%{name}.sysconfig
 Source2:	%{name}.init
 Source3:	%{name}.conf
@@ -73,8 +73,7 @@ cp -f /usr/share/automake/config.sub .
 	--with-ssl
 
 %{__make} \
-	CFLAGS="%{rpmcflags}" \
-	OFLAGS="%{rpmcflags}"
+	CFLAGS="%{rpmcflags} -include config.h"
 
 %install
 rm -rf $RPM_BUILD_ROOT
