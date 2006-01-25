@@ -19,9 +19,9 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	openssl-devel
 BuildRequires:	rpmbuild(macros) >= 1.202
+Requires:	dialog >= 1:0.69
 Provides:	group(bnc)
 Provides:	user(bnc)
-Requires:	dialog >= 1:0.69
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
@@ -43,16 +43,16 @@ od u¿ytkownika do serwera i vice versa.
 Summary:	Simple IRC bouncer daemon
 Summary(pl):	Prosty demon do tunelowania IRC
 Group:		Networking/Utilities
-Requires:	%{name} = %{epoch}:%{version}-%{release}
-Requires:	/sbin/start-stop-daemon
 Requires(post):	grep
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires(postun):	/usr/sbin/groupdel
-Requires(postun):	/usr/sbin/userdel
-Requires(post,preun):	/sbin/chkconfig
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	/sbin/start-stop-daemon
 
 %description init
 This package contains the initscript to start bnc as system service.
