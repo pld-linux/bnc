@@ -18,7 +18,7 @@ URL:		http://www.gotbnc.com/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	openssl-devel
-BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	dialog >= 1:0.69
 Provides:	group(bnc)
 Provides:	user(bnc)
@@ -105,20 +105,12 @@ EOF
 # ' vim
 
 fi
-
 /sbin/chkconfig --add %{name}
-
-if [ -f /var/lock/subsys/%{name} ]; then
-	/etc/rc.d/init.d/%{name} restart 1>&2
-else
-	echo "Run \"/etc/rc.d/init.d/%{name} start\" to start %{name} daemon."
-fi
+%service %{name} restart "%{name} daemon"
 
 %preun init
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/%{name} ]; then
-		/etc/rc.d/init.d/%{name} stop 1>&2
-	fi
+	%service %{name} stop
 	/sbin/chkconfig --del %{name}
 fi
 
