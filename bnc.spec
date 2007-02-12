@@ -1,7 +1,7 @@
 # TODO
 #  - bncsetup working partially, needs newer dialog
 Summary:	Simple IRC bouncer
-Summary(pl):	Proste narzêdzie do tunelowania IRC
+Summary(pl.UTF-8):   Proste narzÄ™dzie do tunelowania IRC
 Name:		bnc
 Version:	2.9.4
 Release:	3
@@ -32,16 +32,16 @@ BNC is a great IRC (Internet Relay Chat) proxying server under the GPL
 by bouncing off the computer which is running BNC. Basically, it
 forwards the information from the user to the server and vise versa.
 
-%description -l pl
+%description -l pl.UTF-8
 BNC jest rewelacyjnym i prostym proxy do IRC (Internet Relay Chat) na
-licencji GPL (General Public License). BNC pozwala u¿ytkownikom na
-po³±czenie siê z serwerem IRC wykorzystuj±c do tego komputer na którym
-BNC zosta³o uruchomione. Mówi±c w skrócie, BNC przekazuje informacje
-od u¿ytkownika do serwera i vice versa.
+licencji GPL (General Public License). BNC pozwala uÅ¼ytkownikom na
+poÅ‚Ä…czenie siÄ™ z serwerem IRC wykorzystujÄ…c do tego komputer na ktÃ³rym
+BNC zostaÅ‚o uruchomione. MÃ³wiÄ…c w skrÃ³cie, BNC przekazuje informacje
+od uÅ¼ytkownika do serwera i vice versa.
 
 %package init
 Summary:	Simple IRC bouncer daemon
-Summary(pl):	Prosty demon do tunelowania IRC
+Summary(pl.UTF-8):   Prosty demon do tunelowania IRC
 Group:		Networking/Utilities
 Requires(post):	grep
 Requires(post,preun):	/sbin/chkconfig
@@ -57,8 +57,8 @@ Requires:	/sbin/start-stop-daemon
 %description init
 This package contains the initscript to start bnc as system service.
 
-%description init -l pl
-Ten pakiet zawiera skrypt init do uruchamiania bnc jako us³ugi
+%description init -l pl.UTF-8
+Ten pakiet zawiera skrypt init do uruchamiania bnc jako usÅ‚ugi
 systemowej.
 
 %prep
