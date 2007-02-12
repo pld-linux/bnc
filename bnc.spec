@@ -1,7 +1,7 @@
 # TODO
 #  - bncsetup working partially, needs newer dialog
 Summary:	Simple IRC bouncer
-Summary(pl.UTF-8):   Proste narzędzie do tunelowania IRC
+Summary(pl.UTF-8):	Proste narzędzie do tunelowania IRC
 Name:		bnc
 Version:	2.9.4
 Release:	3
@@ -41,7 +41,7 @@ od użytkownika do serwera i vice versa.
 
 %package init
 Summary:	Simple IRC bouncer daemon
-Summary(pl.UTF-8):   Prosty demon do tunelowania IRC
+Summary(pl.UTF-8):	Prosty demon do tunelowania IRC
 Group:		Networking/Utilities
 Requires(post):	grep
 Requires(post,preun):	/sbin/chkconfig
